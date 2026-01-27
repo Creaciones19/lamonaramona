@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>La Mona Ramona</title>
+
+<style>
+  :root{
+    /* ✅ VERDE PRINCIPAL */
+    --verde:#00754a;
+    --verde2:#0b8a5b;
+    --verde3:#0a5c3f;
+
+    --shadow: 0 16px 44px rgba(0,0,0,.18);
+    --radius: 18px;
+
+    /* ✅ Fondo global (TU PNG) */
+    --bg-img: url("lamonalogo.png");
+
+    /* ✅ Overlay verde (suave) */
+    --bg-dim: rgba(0, 117, 74, .10);
+
+    /* ✅ GLASS -> AHORA VERDE SÓLIDO (SIN OPACIDAD) */
+    --glass: #00754a;          /* <-- sólido */
+    --glass-strong: #006a43;   /* <-- sólido un poco más oscuro */
+    --border: rgba(255,255,255,.18);
+
+    /* Texto */
+    --txt: rgba(255,255,255,.92);
+    --txt2: rgba(255,255,255,.82);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;font-family: system-ui, -apple-system, Segoe UI, Arial;}
+  html{scroll-behavior:smooth;}
+  body{
+    min-height:100vh;
+    position:relative;
+    background:#0d2a1f;
+    color: var(--txt);
+    line-height:1.35;
+  }
+
+  /* ===== FONDO FIJO GLOBAL ===== */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image: var(--bg-img);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    filter: saturate(1.05) contrast(1.02);
+    z-index:-2;
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(1200px 700px at 18% 10%, rgba(0,117,74,.08), transparent 58%),
+      radial-gradient(900px 600px at 80% 25%, rgba(0,117,74,.06), transparent 60%),
+      linear-gradient(var(--bg-dim), var(--bg-dim));
+    z-index:-1;
+  }
+
+  a{color:inherit}
+  img{max-width:100%;display:block}
+
+  .wrap{width:min(1120px, 92%); margin:0 auto;}
+  section{padding:70px 0;}
+
+  .h2{
+    font-size:2.2rem;
+    text-align:center;
+    margin-bottom:12px;
+    color: rgba(255,255,255,.95);
+    text-shadow: 0 10px 30px rgba(0,0,0,.25);
+    font-weight:1000;
+  }
+.sub{
+  max-width:820px;
+  margin:0 auto 36px;
+  text-align:center;
+  color:#ffffff;
+  font-weight:800;
+  font-size:1.15rem;             /* ⬅ más grande */
+  text-shadow:
+    0 2px 6px rgba(0,0,0,.6),
+    0 8px 22px rgba(0,0,0,.5);
+}
+  p.sub{
+    max-width: 820px;
+    margin: 0 auto 36px;
+    text-align: center;
+    color: rgba(255,255,255,.95);
+    text-shadow: 0 10px 30px rgba(0,0,0,.22);
+    font-weight: 600;
+  }
+
+  /* ===== BOTONES ===== */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    padding:14px 22px;
+    border-radius:999px;
+    text-decoration:none;
+    font-weight:900;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition: transform .14s ease, opacity .14s ease, box-shadow .14s ease, filter .14s ease;
+    user-select:none;
+    box-shadow: 0 16px 36px rgba(0,0,0,.22);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    white-space:nowrap;
+  }
+  .btn:hover{transform: translateY(-2px); opacity:.985; box-shadow: 0 22px 48px rgba(0,0,0,.28);}
+  .btn:active{transform: translateY(0); filter:saturate(1.05);}
+  .btn.primary{
+    background: linear-gradient(180deg, rgba(0,117,74,.98), rgba(10,92,63,.98));
+    color:#fff;
+    border-color: rgba(255,255,255,.16);
+  }
+  .btn.secondary{
+    background: rgba(255,255,255,.10);
+    color: rgba(255,255,255,.92);
+    border-color: rgba(255,255,255,.22);
+  }
+  .btn.wa{
+    background:#25D366;
+    color:#fff;
+    border-color: rgba(0,0,0,.10);
+  }
+  .btn.small{padding:11px 16px; font-size:.95rem; box-shadow:none;}
+
+  /* ===== HEADER ===== */
+  header{
+    position:sticky; top:0; z-index:50;
+    background: var(--glass);         /* ✅ SOLIDO */
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border-bottom:1px solid rgba(255,255,255,.14);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 0;
+    gap:14px;
+  }
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand-logo{
+    width:44px;height:44px;border-radius:14px; overflow:hidden;
+    background: transparent;
+    box-shadow: 0 12px 30px rgba(0,0,0,.22);
+    border: 1px solid rgba(255,255,255,.18);
+  }
+  .brand-logo img{width:100%;height:100%;object-fit:cover}
+  .brand-name{font-weight:1000;color: rgba(255,255,255,.95); line-height:1}
+  .brand-sub{font-size:.85rem;color: rgba(255,255,255,.78)}
+
+  .nav-links{display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+  .nav-links a{font-weight:900;text-decoration:none;color: rgba(255,255,255,.86);opacity:.92}
+  .nav-links a:hover{opacity:1}
+
+  /* ===== HERO ===== */
+  .hero{padding:26px 0 44px;}
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.12fr .88fr;
+    gap:22px;
+    align-items:stretch;
+  }
+  .hero-left{
+    border-radius: calc(var(--radius) + 10px);
+    padding:34px;
+    box-shadow: 0 22px 60px rgba(0,0,0,.30);
+    background: var(--glass);         /* ✅ SOLIDO */
+    border:1px solid rgba(255,255,255,.18);
+    overflow:hidden;
+    position:relative;
+    min-height: 430px;
+    display:flex; flex-direction:column; justify-content:center;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  .hero-left::before{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(120deg, rgba(0,0,0,.10), rgba(0,0,0,.22)); /* solo sombra, NO transparencia verde */
+    pointer-events:none;
+  }
+  .hero-left > *{position:relative;}
+  .tag{
+    display:inline-flex;gap:10px;align-items:center;
+    padding:8px 14px;border-radius:999px;
+    background: rgba(255,255,255,.12);
+    color: rgba(255,255,255,.92);
+    font-weight:900; font-size:.92rem;
+    width:fit-content;
+    border:1px solid rgba(255,255,255,.18);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  .hero-left h1{
+    font-size:3.2rem;
+    line-height:1.03;
+    margin:14px 0 10px;
+    color: rgba(255,255,255,.98);
+    text-shadow: 0 18px 50px rgba(0,0,0,.35);
+    font-weight:1000;
+  }
+  .hero-left p{
+    font-size:1.12rem;
+    max-width:60ch;
+    color: rgba(255,255,255,.90);
+    text-shadow: 0 12px 36px rgba(0,0,0,.28);
+  }
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .badge{
+    display:inline-flex; gap:10px; align-items:center;
+    padding:10px 14px; border-radius:14px;
+    background: var(--glass-strong);  /* ✅ SOLIDO */
+    border:1px solid rgba(255,255,255,.18);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    font-weight:900;
+    color: rgba(255,255,255,.92);
+    box-shadow: 0 14px 34px rgba(0,0,0,.22);
+  }
+
+  .hero-right{display:flex;flex-direction:column;gap:14px;}
+  .panel{
+    background: var(--glass);         /* ✅ SOLIDO */
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius: calc(var(--radius) + 10px);
+    box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    padding:18px;
+    overflow:hidden;
+    display:grid;
+    grid-template-columns: 110px 1fr;
+    gap:14px;
+    align-items:center;
+    min-height:120px;
+  }
+  .panel .pic{
+    width:110px;height:110px;border-radius:18px; overflow:hidden;
+    background: rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.18);
+  }
+  .panel .pic img{width:100%;height:100%;object-fit:cover}
+  .panel h3{color: rgba(255,255,255,.94); font-size:1.15rem; margin-bottom:6px; font-weight:1000}
+  .panel .mini{color: rgba(255,255,255,.82)}
+  .panel .price{font-weight:1000;color: rgba(255,255,255,.92); margin-top:6px}
+
+  /* ===== GRID ===== */
+  .grid{display:grid;grid-template-columns:repeat(12, 1fr);gap:18px;}
+
+  .card{
+    grid-column: span 3;
+    background: var(--glass);         /* ✅ SOLIDO */
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border-radius: calc(var(--radius) + 10px);
+    overflow:hidden;
+    box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    border:1px solid rgba(255,255,255,.18);
+    display:flex;flex-direction:column;
+    min-height: 340px;
+    transform: translateY(6px);
+  }
+  .card .img{height:180px;background: rgba(255,255,255,.06)}
+  .card .img img{width:100%;height:100%;object-fit:cover}
+  .card .body{padding:16px}
+  .card h4{color: rgba(255,255,255,.96); font-size:1.12rem;margin-bottom:8px;font-weight:1000}
+  .card p{color: rgba(255,255,255,.88); font-size:.96rem}
+  .card .foot{
+    margin-top:auto; padding:14px 16px;
+    display:flex; justify-content:space-between; align-items:center;
+    border-top:1px solid rgba(255,255,255,.14)
+  }
+  .pill{
+    font-weight:1000;
+    font-size:.92rem;
+    color: rgba(255,255,255,.92);
+    background: rgba(255,255,255,.12);
+    padding:8px 12px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.16);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+
+  /* ===== BENEF / TESTI / FAQ ===== */
+  .benef,.testi{
+    grid-column: span 4;
+    padding:22px;
+    background: var(--glass);         /* ✅ SOLIDO */
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border-radius: calc(var(--radius) + 10px);
+    box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    border:1px solid rgba(255,255,255,.18);
+  }
+  .benef h4{color: rgba(255,255,255,.96); margin-bottom:10px;font-weight:1000}
+  .benef p,.testi p{color: rgba(255,255,255,.88)}
+  .testi .name{margin-top:12px; font-weight:1000; color: rgba(255,255,255,.92)}
+  .stars{letter-spacing:1px;color: rgba(255,255,255,.92)}
+
+  details{
+    background: var(--glass);         /* ✅ SOLIDO */
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border-radius: 18px;
+    padding:16px;
+    box-shadow: 0 18px 44px rgba(0,0,0,.26);
+    border:1px solid rgba(255,255,255,.18);
+    grid-column: span 6;
+  }
+  summary{cursor:pointer;font-weight:1000;color: rgba(255,255,255,.94)}
+  details p{margin-top:10px;color: rgba(255,255,255,.88)}
+
+  /* ===== CTA STRIP ===== */
+  .strip{padding:0;}
+  .strip .box{
+    border-radius: calc(var(--radius) + 12px);
+    background: linear-gradient(120deg, rgba(0,117,74,.98), rgba(10,92,63,.98));
+    color:#fff;
+    padding:30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:14px;
+    box-shadow: 0 24px 70px rgba(0,0,0,.34);
+    border:1px solid rgba(255,255,255,.18);
+  }
+  .strip h3{font-size:1.6rem;font-weight:1000}
+  .strip p{opacity:.96}
+
+  /* ===== CONTACTO ===== */
+/* ===== CONTACTO ===== */
+#contacto{position:relative}
+
+.contact-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:18px;
+  align-items:stretch;
+}
+
+.contact-box{
+  background: var(--glass);
+  border-radius: calc(var(--radius) + 10px);
+  padding:28px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.28);
+  border:1px solid rgba(255,255,255,.18);
+
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:540px;
+}
+
+/* ===== FONDO SOLO PARA IZQUIERDA (opcional) ===== */
+.contact-bg{
+  --contact-bg: url("https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1400&q=80");
+  background:
+    linear-gradient(180deg, rgba(0,100,70,.86), rgba(0,85,60,.86)),
+    var(--contact-bg);
+  background-size:cover;
+  background-position:center;
+}
+
+/* TÍTULO */
+.contact-box h3{
+  margin:0;
+  text-align:center;
+  font-weight:1000;
+  color: rgba(255,255,255,.96);
+}
+
+/* LISTA */
+.contact-list{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin:20px 0;
+  align-items:center;
+  text-align:center;
+}
+.contact-list > div{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+}
+.contact-list a{
+  font-weight:1000;
+  color: rgba(255,255,255,.92);
+  text-decoration:none;
+}
+.contact-list a:hover{opacity:.95}
+
+/* REDES */
+.social{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:10px;
+}
+.social a{
+  text-decoration:none;
+  font-weight:1000;
+  padding:10px 16px;
+  border-radius:999px;
+  background: rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.20);
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  color: rgba(255,255,255,.92);
+  transition: transform .14s ease, box-shadow .14s ease, opacity .14s ease;
+}
+.social a:hover{transform: translateY(-1px); box-shadow: 0 18px 40px rgba(0,0,0,.22); opacity:.98}
+.social svg{width:18px;height:18px;display:block}
+
+/* BOTONES */
+.contact-actions{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:14px;
+  margin-top:18px;
+}
+.contact-actions .btn{
+  width:100%;
+  justify-content:center;
+  text-align:center;
+  padding:14px 16px;
+  border-radius:999px;
+  font-weight:1000;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+}
+
+/* WhatsApp: usa el logo original */
+.btn.wa .wa-ico{
+  width:18px;
+  height:18px;
+  display:block;
+}
+
+/* Texto de la derecha sin inline */
+#mediaBox .media-sub{
+  color: rgba(255,255,255,.86);
+  margin: 10px 0 12px;
+}
+
+/* Responsive */
+@media (max-width: 900px){
+  .contact-grid{grid-template-columns:1fr}
+  .contact-box{min-height:auto}
+}
+
+@media (max-width: 520px){
+  .contact-actions{grid-template-columns:1fr}
+}
+  footer{
+    background: rgba(0,0,0,.30);
+    color: rgba(255,255,255,.82);
+    padding:20px 0; text-align:center;
+    font-size:.9rem;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border-top:1px solid rgba(255,255,255,.14);
+  }
+
+  /* ===== Tabs Foto/Promo/Mapa ===== */
+  .media-tabs{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin: 10px 0 12px;
+  }
+
+  .media-tab{
+    appearance:none;
+    border:1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.12);
+    color: rgba(255,255,255,.95);
+    padding:10px 14px;
+    border-radius:999px;
+    font-weight:1000;
+    cursor:pointer;
+    transition: transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+  }
+
+  .media-tab:hover{transform: translateY(-1px); opacity:.98; box-shadow: 0 14px 30px rgba(0,0,0,.20);}
+  .media-tab.is-active{
+    background: linear-gradient(180deg, rgba(0,117,74,.98), rgba(10,92,63,.98));
+    border-color: rgba(255,255,255,.16);
+  }
+
+  .media-view{
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,.20);
+    border:1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.15);
+    height:320px;
+    position:relative;
+  }
+
+  #mediaImg,
+  #mediaMap{
+    width:100%;
+    height:100%;
+    border:0;
+    display:none;
+    object-fit:cover;
+  }
+
+  .media-hint{
+    margin-top:10px;
+    color: rgba(255,255,255,.78);
+    font-size:.95rem;
+  }
+/* =========================
+   ✅ MODAL MENU (mm-*)
+========================= */
+.mm-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;            /* oculto por defecto */
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+.mm-modal.is-open{ display:flex; }
+
+.mm-backdrop{
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(3px);
+}
+
+.mm-dialog{
+  position: relative;
+  width: min(760px, 94vw);
+  max-height: 86vh;
+  overflow: auto;
+  border-radius: 18px;
+  background: var(--glass, #0b8a5b);
+  box-shadow: 0 16px 44px rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.14);
+}
+
+.mm-close{
+  position:absolute;
+  top:10px;
+  left:10px;
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.25);
+  color:#fff;
+  font-size:18px;
+  cursor:pointer;
+  z-index:2;
+}
+
+.mm-media{
+  width:100%;
+  aspect-ratio: 16/9;
+  overflow:hidden;
+  border-radius: 18px 18px 0 0;
+}
+.mm-media img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.mm-body{
+  padding: 16px 16px 18px;
+  color:#fff;
+}
+.mm-body h3{ margin:0 0 6px; font-size:22px; }
+.mm-body p{ margin:0 0 10px; opacity:.95; line-height:1.35; }
+.mm-price{ font-weight:800; font-size:18px; }
+
+@media (max-width: 520px){
+  .mm-dialog{ width:100%; }
+  .mm-media{ aspect-ratio: 4/3; }
+}
+  /* ===== WhatsApp flotante (icono real) ===== */
+  .wa-float{
+    position:fixed; right:18px; bottom:18px; z-index:99;
+    width:60px; height:60px; border-radius:999px;
+    display:grid; place-items:center;
+    background:#25D366; color:#fff; text-decoration:none;
+    box-shadow: 0 22px 55px rgba(0,0,0,.38);
+    border:1px solid rgba(0,0,0,.10);
+    transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+  }
+  .wa-float:hover{transform: translateY(-2px); box-shadow: 0 28px 68px rgba(0,0,0,.44);}
+  .wa-float svg{width:30px;height:30px}
+
+  /* ===== ANIMACIÓN SUAVE ===== */
+  .reveal{
+    opacity:0;
+    transform: translateY(14px);
+    transition: opacity .6s ease, transform .6s ease;
+    will-change: opacity, transform;
+  }
+  .reveal.in{opacity:1; transform: translateY(0);}
+  .reveal.delay-1{transition-delay:.06s}
+  .reveal.delay-2{transition-delay:.12s}
+  .reveal.delay-3{transition-delay:.18s}
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-left{min-height:420px}
+    .card{grid-column: span 6;}
+    .benef{grid-column: span 6;}
+    .testi{grid-column: span 6;}
+    details{grid-column: span 12;}
+    .contact-grid{grid-template-columns:1fr}
+  }
+  @media (max-width: 560px){
+    .hero-left h1{font-size:2.35rem}
+    .card{grid-column: span 12;}
+    .benef{grid-column: span 12;}
+    .testi{grid-column: span 12;}
+    .nav-links{display:none}
+  }
+</style>
+</head>
+
+<body>
+
+<script>
+  /* =========================================================
+     ✅ AQUÍ SOLO CAMBIAS DESPUÉS (TEXTOS / PRECIOS / LINKS)
+  ========================================================= */
+ const DATA = {
+  negocio: "La Mona Ramona",
+  eslogan: "Café, pan y cosas ricas con vibra bonita.",
+  mensajePedido: "Hola 😊 quiero hacer un pedido en La Mona Ramona. ¿Me compartes el menú y precios, por favor?",
+
+  telefono: "3343340062",
+  correo: "dinahgomez19@gmail.com",
+
+  facebook: "https://facebook.com/dana.montoya.9843",
+  instagram: "https://instagram.com/tu_usuario",
+  tiktok: "https://tiktok.com/@tu_usuario",
+
+  horario: "Lun a Dom · 9:00 a.m. – 8:00 p.m.",
+  ubicacion: "Tu dirección aquí (colonia, ciudad)",
+
+  logo: "lamonalogo.png",
+
+  // ===== Foto / Promo / Mapa (ESTO ES LO QUE CONTROLA ESE CÓDIGO) =====
+  // TAB "Foto" usa DATA.fotoImg
+  fotoImg: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1400&q=80",
+
+  // TAB "Promo" usa DATA.promoImg (placeholder de café, luego la cambias)
+  promoImg: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=1400&q=80",
+
+  // TAB "Mapa" usa DATA.mapaEmbed (pega aquí el SRC del iframe de Google Maps)
+  mapaEmbed: "https://www.google.com/maps/embed?pb=PEGALO_AQUI",
+
+  /* ✅ Destacados (3) */
+  destacados: [
+    {
+      titulo: "Latte de la casa",
+      texto: "Cremoso, aromático y con buena vibra.",
+      precio: "Desde $65",
+      img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=70"
+    },
+    {
+      titulo: "Panadería / Postres",
+      texto: "Pan dulce, roles y postres para cerrar perfecto.",
+      precio: "Desde $25",
+      img: "https://images.unsplash.com/photo-1542826438-bd32f43d626f?auto=format&fit=crop&w=900&q=70"
+    },
+    {
+      titulo: "Bebida fría estrella",
+      texto: "Fresca, dulce y perfecta para el calor.",
+      precio: "Desde $55",
+      img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=900&q=70"
+    }
+  ],
+
+  /* ✅ Menú por categorías (placeholders realistas) */
+  
+   // ✅ REEMPLAZA tu menu: [...] por este (misma foto por ahora + texto para modal)
+menu: [
+{
+  titulo: "Baguettes",
+  texto: "Calientitos, bien servidos y listos para amar.",
+  precio: "Desde $25",
+  etiqueta: "Top",
+  img: "https://images.unsplash.com/photo-1550317138-10000687a72b?auto=format&fit=crop&w=1400&q=70",
+
+  modalImg: "https://images.unsplash.com/photo-1550317138-10000687a72b?auto=format&fit=crop&w=1400&q=70",
+  modalTexto:
+  "Baguettes artesanales preparados al momento.\n\nRellenos a elegir:\n• Pollo\n• Jamón\n• Jamón de pavo\n• Atún\n• Queso\n• Veggie\n\nPan crujiente, ingredientes frescos y aderezos a elegir."
+},
+{
+  titulo: "Ensaladas",
+  texto: "Frescas, completas y con ingredientes top.",
+  precio: "Desde $50",
+  etiqueta: "Saludable",
+  img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=1400&q=70",
+
+  modalImg: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=1400&q=70",
+  modalTexto:
+  "Ensaladas frescas armadas al momento.\n\nOpciones:\n• Clásica\n• Pollo\n• Atún\n• Veggie\n\nIncluyen base, toppings frescos y aderezo a elegir."
+},
+{
+  titulo: "Bebidas frías",
+  texto: "Frappés, sodas italianas y bebidas para el calor.",
+  precio: "Desde $65",
+  etiqueta: "Refrescante",
+  img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=1400&q=70",
+
+  modalImg: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=1400&q=70",
+  modalTexto:
+  "Bebidas frías para refrescarte.\n\nDisponibles:\n• Frappés\n• Sodas italianas\n• Bebidas de temporada\n\nTamaños:\n• Chico\n• Mediano\n• Grande"
+},
+{
+  titulo: "Panadería y postres",
+  texto: "Pan dulce, roles, galletas y postres del día.",
+  precio: "Desde $45",
+  etiqueta: "Dulce",
+  img: "https://images.unsplash.com/photo-1542826438-bd32f43d626f?auto=format&fit=crop&w=1400&q=70",
+
+  modalImg: "https://images.unsplash.com/photo-1542826438-bd32f43d626f?auto=format&fit=crop&w=1400&q=70",
+  modalTexto:
+  "Panadería y postres recién hechos.\n\nVariedad del día:\n• Pan dulce\n• Roles\n• Galletas\n• Postre especial\n\nPregunta por lo más fresco."
+},
+{
+  titulo: "Cafés",
+  texto: "Espresso, americano, latte, capuccino… como te guste.",
+  precio: "Desde $75",
+  etiqueta: "Clásico",
+  img: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=1400&q=70",
+
+  modalImg: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=1400&q=70",
+  modalTexto:
+  "Cafés preparados al momento.\n\nOpciones:\n• Espresso\n• Americano\n• Latte\n• Capuccino\n\nLeche normal, deslactosada o vegetal.\nEndulzante a elegir."
+},
+{
+  titulo: "Desayunos",
+  texto: "Opciones ricas para arrancar bien el día.",
+  precio: "Desde $100",
+  etiqueta: "Mañana",
+  img: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1400&q=70",
+
+  modalImg: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1400&q=70",
+  modalTexto:
+  "Desayunos completos para comenzar el día.\n\nOpciones disponibles:\n• Opción 1\n• Opción 2\n• Opción 3\n\nIncluyen bebida caliente o jugo (según opción)."
+},
+{
+  titulo: "Sandwiches artesanales",
+  texto: "Pan crujiente, ingredientes frescos y combinaciones clásicas.",
+  precio: "Desde $85",
+  etiqueta: "Recomendado",
+  img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=1400&q=70",
+
+  modalImg: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=1400&q=70",
+  modalTexto:
+  "Sandwiches artesanales preparados al momento.\n\nRellenos:\n• Clásico\n• Pollo\n• Atún\n• Veggie\n\nExtras:\n• Queso\n• Tocino\n• Papas o ensalada"
+},
+{
+  titulo: "Bebidas calientes especiales",
+  texto: "Chocolate caliente, chai latte y bebidas reconfortantes.",
+  precio: "Desde $70",
+  etiqueta: "Caliente",
+  img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1400&q=70",
+
+  modalImg: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1400&q=70",
+  modalTexto:
+  "Bebidas calientes para reconfortar.\n\nOpciones:\n• Chocolate caliente\n• Chai latte\n• Bebida del día\n\nTamaños:\n• Chico\n• Mediano\n• Grande"
+}
+
+],
+
+  beneficios: [
+    { titulo: "☕ Café con carácter", texto: "Tu primer sorbo ya te cambia el día." },
+    { titulo: "🥖 Hecho al momento", texto: "Pan, baguettes y postres recién preparados." },
+    { titulo: "✨ Vibra bonita", texto: "Ambiente tranquilo, luz cálida y buena música." }
+  ],
+
+  testimonios: [
+    { texto: "“El latte está brutal y el pan recién hecho es otro nivel.”", nombre: "Cliente feliz ⭐⭐⭐⭐⭐" },
+    { texto: "“Todo se siente fresco y bien servido. Regreso siempre.”", nombre: "Cliente feliz ⭐⭐⭐⭐⭐" },
+    { texto: "“La vibra del lugar está hermosa. Ideal para desconectar.”", nombre: "Cliente feliz ⭐⭐⭐⭐⭐" }
+  ],
+
+  faqs: [
+    { q: "¿Cómo hago un pedido?", a: "Presiona “Pedir por WhatsApp” y te atendemos al momento. También puedes llamar." },
+    { q: "¿Tienen servicio a domicilio?", a: "Sí contacta para darte la zona que manejamos." },
+    { q: "¿Aceptan transferencias o tarjeta?", a: "Sí te enviamos nuestro datos para la trasferencia." },
+    { q: "¿Puedo pedir para eventos?", a: "Sí, manejamos pedidos grandes con anticipación." }
+  ]
+};
+</script>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#inicio" aria-label="Inicio">
+      <div class="brand-logo"><img id="logoImg" alt="Logo"/></div>
+      <div>
+        <div class="brand-name" id="brandName">—</div>
+        <div class="brand-sub" id="brandSub">Ordena fácil por WhatsApp</div>
+      </div>
+    </a>
+
+    <nav class="nav-links">
+      <a href="#menu">Menú</a>
+      <a href="#beneficios">Beneficios</a>
+      <a href="#opiniones">Opiniones</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+
+    <a id="btnNavPedido" class="btn primary small" href="#">Pedir ahora</a>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="inicio">
+  <div class="wrap hero-grid">
+
+    <div class="hero-left reveal">
+      <span class="tag">🐵 La Mona Ramona · Cafetería</span>
+      <h1 id="h1">—</h1>
+      <p id="heroText">—</p>
+
+      <div class="hero-cta">
+        <a id="btnWa" class="btn wa" href="#" target="_blank" rel="noopener" aria-label="Pedir por WhatsApp">
+          <!-- WhatsApp icon (SVG real) -->
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path fill="currentColor" d="M19.11 17.72c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.2-.56.07-.26-.13-1.1-.41-2.09-1.31-.77-.69-1.29-1.55-1.44-1.81-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.33-.02-.46-.07-.13-.58-1.4-.79-1.92-.21-.5-.42-.43-.58-.44h-.5c-.17 0-.46.07-.7.33-.24.26-.92.9-.92 2.19 0 1.29.95 2.54 1.08 2.72.13.17 1.86 2.84 4.5 3.98.63.27 1.12.43 1.5.55.63.2 1.2.17 1.65.1.5-.07 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.17-.5-.3z"/>
+            <path fill="currentColor" d="M16 3C8.83 3 3 8.83 3 16c0 2.29.6 4.44 1.64 6.3L3.5 28.5l6.36-1.1A12.9 12.9 0 0 0 16 29c7.17 0 13-5.83 13-13S23.17 3 16 3zm0 23.5c-2.1 0-4.07-.62-5.73-1.69l-.41-.26-3.78.65.64-3.68-.27-.43A10.98 10.98 0 0 1 5 16C5 10.48 10.48 5 16 5s11 5.48 11 11-5.48 10.5-11 10.5z"/>
+          </svg>
+          Pedir por WhatsApp
+        </a>
+
+        <a id="btnTel" class="btn secondary" href="#" aria-label="Llamar">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path fill="currentColor" d="M6.6 10.8c1.6 3.1 3.5 5 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.2 1.2.4 2.5.6 3.8.6.6 0 1 .4 1 1V21c0 .6-.4 1-1 1C10.4 22 2 13.6 2 3c0-.6.4-1 1-1h4.2c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.8.1.4 0 .8-.2 1.1L6.6 10.8z"/>
+          </svg>
+          Llamar
+        </a>
+
+        <a id="btnMail" class="btn secondary" href="#" aria-label="Correo">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
+          </svg>
+          Correo
+        </a>
+      </div>
+
+      <div class="hero-badges">
+        <span class="badge" id="tagHorario">⏰ —</span>
+        <span class="badge" id="tagUbicacion">📍 —</span>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="panel reveal delay-1">
+        <div class="pic"><img id="dImg1" alt="Destacado 1"></div>
+        <div>
+          <h3 id="dT1">—</h3>
+          <div class="mini" id="dTx1">—</div>
+          <div class="price" id="dP1">—</div>
+        </div>
+      </div>
+
+      <div class="panel reveal delay-2">
+        <div class="pic"><img id="dImg2" alt="Destacado 2"></div>
+        <div>
+          <h3 id="dT2">—</h3>
+          <div class="mini" id="dTx2">—</div>
+          <div class="price" id="dP2">—</div>
+        </div>
+      </div>
+      <div class="panel reveal delay-3">
+  <div class="pic"><img id="dImg3" alt="Destacado 3"></div>
+  <div>
+    <h3 id="dT3">—</h3>
+    <div class="mini" id="dTx3">—</div>
+    <div class="price" id="dP3">—</div>
+  </div>
+</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== MENÚ ===== -->
+<section id="menu">
+  <div class="wrap">
+    <div class="h2 reveal">Menú</div>
+    <p class="sub reveal delay-1">Deliciosa comida para mantener tu salud</p>
+    <div class="grid" id="menuGrid"></div>
+  </div>
+</section>
+<!-- =========================
+     ✅ MODAL MENÚ (FALTABA)
+========================= -->
+<div class="mm-modal" id="mmModal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="mm-backdrop" data-mm-close></div>
+
+  <div class="mm-dialog" role="document">
+    <button class="mm-close" type="button" data-mm-close aria-label="Cerrar">✕</button>
+
+    <div class="mm-media">
+      <img id="mmImg" alt="Imagen del producto">
+    </div>
+
+    <div class="mm-body">
+      <h3 id="mmTitle">—</h3>
+      <p id="mmText">—</p>
+      <div class="mm-price" id="mmPrice">—</div>
+    </div>
+  </div>
+</div>
+<!-- ===== BENEFICIOS ===== -->
+<section id="beneficios">
+  <div class="wrap">
+    <div class="h2 reveal">¿Por qué elegirnos?</div>
+    <p class="sub reveal delay-1">Café rico, pan recién hecho y vibra bonita para tu día.</p>
+    <div class="grid" id="benefGrid"></div>
+  </div>
+</section>
+
+<!-- ===== CTA STRIP ===== -->
+<section class="strip">
+  <div class="wrap">
+    <div class="box reveal">
+      <div>
+        <h3>¿Listo para pedir?</h3>
+        <p>Presiona WhatsApp y te mandamos el menú con precios.</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+       <a id="btnWa2" class="btn wa" href="#" target="_blank" rel="noopener">
+<svg viewBox="0 0 32 32" width="18" height="18" aria-hidden="true">
+<path fill="currentColor" d="M19.11 17.72c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.2-.56.07-.26-.13-1.1-.41-2.09-1.31-.77-.69-1.29-1.55-1.44-1.81-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.33-.02-.46-.07-.13-.58-1.4-.79-1.92-.21-.5-.42-.43-.58-.44h-.5c-.17 0-.46.07-.7.33-.24.26-.92.9-.92 2.19 0 1.29.95 2.54 1.08 2.72.13.17 1.86 2.84 4.5 3.98.63.27 1.12.43 1.5.55.63.2 1.2.17 1.65.1.5-.07 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.17-.5-.3z"/>
+<path fill="currentColor" d="M16 3C8.83 3 3 8.83 3 16c0 2.29.6 4.44 1.64 6.3L3.5 28.5l6.36-1.1A12.9 12.9 0 0 0 16 29c7.17 0 13-5.83 13-13S23.17 3 16 3zm0 23.5c-2.1 0-4.07-.62-5.73-1.69l-.41-.26-3.78.65.64-3.68-.27-.43A10.98 10.98 0 0 1 5 16C5 10.48 10.48 5 16 5s11 5.48 11 11-5.48 10.5-11 10.5z"/>
+</svg>
+Pedir por WhatsApp
+</a>
+        <a id="btnTel2" class="btn secondary" href="#">Llamar</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== OPINIONES ===== -->
+<section id="opiniones">
+  <div class="wrap">
+    <div class="h2 reveal">Opiniones</div>
+    <p class="sub reveal delay-1">Prueba y vas a entender por qué regresan.</p>
+    <div class="grid" id="testiGrid"></div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section id="faq">
+  <div class="wrap">
+    <div class="h2 reveal">Preguntas frecuentes</div>
+    <p class="sub reveal delay-1">Resuelve rápido y pide sin duda.</p>
+    <div class="grid" id="faqGrid"></div>
+  </div>
+</section>
+
+<!-- ===== CONTACTO ===== -->
+<section id="contacto">
+  <div class="wrap">
+    <div class="h2 reveal">Contacto</div>
+    <p class="sub reveal delay-1">Pide tu comida favorita.</p>
+
+    <div class="contact-grid">
+      <!-- ===== IZQUIERDA ===== -->
+      <div class="contact-box reveal contact-bg">
+        <h3>Contáctanos</h3>
+
+        <div class="contact-list">
+          <div>📞 <a id="cTel" href="#">—</a></div>
+          <div>📧 <a id="cMail" href="#">—</a></div>
+          <div>⏰ <span id="cHorario">—</span></div>
+          <div>📍 <span id="cUbicacion">—</span></div>
+        </div>
+
+        <div class="social">
+          <a id="cFb" href="#" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.5V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/>
+            </svg>
+            Facebook
+          </a>
+
+          <a id="cIg" href="#" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm10 2H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm-5 4.5A5.5 5.5 0 1 1 6.5 14 5.5 5.5 0 0 1 12 8.5zm0 2A3.5 3.5 0 1 0 15.5 14 3.5 3.5 0 0 0 12 10.5zM18 6.7a1.1 1.1 0 1 1-1.1 1.1A1.1 1.1 0 0 1 18 6.7z"/>
+            </svg>
+            Instagram
+          </a>
+
+          <a id="cTk" href="#" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M16.2 3c.4 2.2 1.8 3.7 4 4v3.1c-1.5.1-2.9-.4-4-1.1v6.8c0 3.2-2.6 5.8-5.8 5.8S4.6 19 4.6 15.8s2.6-5.8 5.8-5.8c.4 0 .7 0 1.1.1v3.2c-.3-.1-.7-.2-1.1-.2-1.4 0-2.6 1.2-2.6 2.6s1.2 2.6 2.6 2.6 2.6-1.2 2.6-2.6V3h3.2z"/>
+            </svg>
+            TikTok
+          </a>
+        </div>
+
+        <!-- BOTONES (SIN INLINE) -->
+        <div class="contact-actions">
+       <a id="btnWa3" class="btn wa" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+<svg viewBox="0 0 32 32" width="18" height="18" aria-hidden="true">
+<path fill="currentColor" d="M19.11 17.72c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.2-.56.07-.26-.13-1.1-.41-2.09-1.31-.77-.69-1.29-1.55-1.44-1.81-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.33-.02-.46-.07-.13-.58-1.4-.79-1.92-.21-.5-.42-.43-.58-.44h-.5c-.17 0-.46.07-.7.33-.24.26-.92.9-.92 2.19 0 1.29.95 2.54 1.08 2.72.13.17 1.86 2.84 4.5 3.98.63.27 1.12.43 1.5.55.63.2 1.2.17 1.65.1.5-.07 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.17-.5-.3z"/>
+<path fill="currentColor" d="M16 3C8.83 3 3 8.83 3 16c0 2.29.6 4.44 1.64 6.3L3.5 28.5l6.36-1.1A12.9 12.9 0 0 0 16 29c7.17 0 13-5.83 13-13S23.17 3 16 3zm0 23.5c-2.1 0-4.07-.62-5.73-1.69l-.41-.26-3.78.65.64-3.68-.27-.43A10.98 10.98 0 0 1 5 16C5 10.48 10.48 5 16 5s11 5.48 11 11-5.48 10.5-11 10.5z"/>
+</svg>
+WhatsApp
+</a>
+
+          <a id="btnTel3" class="btn primary" href="#" aria-label="Llamar">
+            <span aria-hidden="true">📞</span> Llamar
+          </a>
+        </div>
+      </div>
+
+      <!-- ===== DERECHA ===== -->
+      <div class="contact-box reveal delay-1" id="mediaBox">
+        <h3>Foto / Promo / Mapa</h3>
+
+        <p class="media-sub">
+          
+        </p>
+
+        <div class="media-tabs" role="tablist" aria-label="Selector Foto Promo Mapa">
+          <button class="media-tab is-active" type="button" data-view="foto" role="tab" aria-selected="true">
+            📷 Foto
+          </button>
+          <button class="media-tab" type="button" data-view="promo" role="tab" aria-selected="false">
+            🎁 Promo
+          </button>
+          <button class="media-tab" type="button" data-view="mapa" role="tab" aria-selected="false">
+            📍 Mapa
+          </button>
+        </div>
+
+        <div class="media-view">
+          <img id="mediaImg" alt="Imagen" />
+          <iframe
+            id="mediaMap"
+            title="Mapa"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <div class="media-hint" id="mediaHint">
+         Checa la promocion del dia
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="wrap">
+    <div>© <span id="fYear"></span> <span id="fName"></span> · Todos los derechos reservados</div>
+  </div>
+
+
+
+</footer>
+
+<!-- WhatsApp flotante -->
+<a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="WhatsApp flotante">
+  <svg viewBox="0 0 32 32" aria-hidden="true">
+    <path fill="currentColor" d="M19.11 17.72c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.67.85-.82 1.02-.15.17-.3.2-.56.07-.26-.13-1.1-.41-2.09-1.31-.77-.69-1.29-1.55-1.44-1.81-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.33-.02-.46-.07-.13-.58-1.4-.79-1.92-.21-.5-.42-.43-.58-.44h-.5c-.17 0-.46.07-.7.33-.24.26-.92.9-.92 2.19 0 1.29.95 2.54 1.08 2.72.13.17 1.86 2.84 4.5 3.98.63.27 1.12.43 1.5.55.63.2 1.2.17 1.65.1.5-.07 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.07-.11-.24-.17-.5-.3z"/>
+    <path fill="currentColor" d="M16 3C8.83 3 3 8.83 3 16c0 2.29.6 4.44 1.64 6.3L3.5 28.5l6.36-1.1A12.9 12.9 0 0 0 16 29c7.17 0 13-5.83 13-13S23.17 3 16 3zm0 23.5c-2.1 0-4.07-.62-5.73-1.69l-.41-.26-3.78.65.64-3.68-.27-.43A10.98 10.98 0 0 1 5 16C5 10.48 10.48 5 16 5s11 5.48 11 11-5.48 10.5-11 10.5z"/>
+  </svg>
+</a>
+
+<script>
+  // ===== Helpers =====
+  const waLink = (phone, msg) =>
+    `https://wa.me/52${phone}?text=${encodeURIComponent(msg)}`;
+
+  // =========================
+  // ✅ MODAL MENÚ (funciona ya)
+  // =========================
+  let __MM = null;
+  function initMenuModal() {
+    const modal = document.getElementById("mmModal");
+    const mmImg = document.getElementById("mmImg");
+    const mmTitle = document.getElementById("mmTitle");
+    const mmText = document.getElementById("mmText");
+    const mmPrice = document.getElementById("mmPrice");
+
+    if (!modal || !mmImg || !mmTitle || !mmText || !mmPrice) {
+      console.warn("Modal no encontrado (#mmModal o campos faltantes).");
+      return null;
+    }
+
+    let lastFocus = null;
+
+    const open = (item) => {
+  lastFocus = document.activeElement;
+
+  // ✅ IMAGEN DEL MODAL (independiente de la card)
+  mmImg.src = item.modalImg || item.img || "";
+  mmImg.alt = item.titulo
+    ? `Imagen de ${item.titulo}`
+    : "Imagen del producto";
+
+  // ✅ TEXTO DEL MODAL (independiente de la card)
+  mmTitle.textContent = item.modalTitulo || item.titulo || "";
+  mmText.textContent  = item.modalTexto  || item.texto  || "";
+  mmPrice.textContent = item.modalPrecio || item.precio || "";
+
+  // abrir modal
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+
+  // foco en cerrar
+  const closeBtn = modal.querySelector(".mm-close");
+  if (closeBtn) closeBtn.focus({ preventScroll: true });
+};
+
+    const close = () => {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+
+      if (lastFocus && typeof lastFocus.focus === "function") {
+        lastFocus.focus({ preventScroll: true });
+      }
+    };
+
+   // cerrar por backdrop o por botón
+modal.addEventListener("click", (e) => {
+  const t = e.target;
+  if (t && t.closest("[data-mm-close]")) close();
+});
+    // cerrar con ESC
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("is-open")) close();
+    });
+
+    return { open, close };
+  }
+
+  // =========================
+  // ✅ Todo después de cargar DOM
+  // =========================
+  document.addEventListener("DOMContentLoaded", () => {
+    // ===== Pintar datos =====
+    document.getElementById("brandName").textContent = DATA.negocio;
+    document.getElementById("h1").textContent = DATA.negocio;
+    document.getElementById("heroText").textContent = DATA.eslogan;
+
+    // Logo
+    document.getElementById("logoImg").src = DATA.logo;
+
+    // WhatsApp
+    const wa = waLink(DATA.telefono, DATA.mensajePedido);
+    ["btnWa", "btnWa2", "btnWa3", "waFloat", "btnNavPedido"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.href = wa;
+    });
+
+    // Tel + Mail
+    const telHref = `tel:${DATA.telefono}`;
+    const mailHref = `mailto:${DATA.correo}`;
+
+    ["btnTel", "btnTel2", "btnTel3", "cTel"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.href = telHref;
+      if (id === "cTel") {
+        el.textContent = DATA.telefono.replace(/(\d{2})(\d{4})(\d{4})/, "$1 $2 $3");
+      }
+    });
+
+    ["btnMail", "cMail"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.href = mailHref;
+      if (id === "cMail") el.textContent = DATA.correo;
+    });
+
+    // Tags + Contacto
+    document.getElementById("tagHorario").textContent = `⏰ ${DATA.horario}`;
+    document.getElementById("tagUbicacion").textContent = `📍 ${DATA.ubicacion}`;
+    document.getElementById("cHorario").textContent = DATA.horario;
+    document.getElementById("cUbicacion").textContent = DATA.ubicacion;
+
+    // Redes
+    document.getElementById("cFb").href = DATA.facebook;
+    document.getElementById("cIg").href = DATA.instagram;
+    document.getElementById("cTk").href = DATA.tiktok;
+
+    // Footer
+    document.getElementById("fYear").textContent = new Date().getFullYear();
+    document.getElementById("fName").textContent = DATA.negocio;
+
+    // ===== Destacados (3) =====
+    const d1 = DATA.destacados[0],
+      d2 = DATA.destacados[1],
+      d3 = DATA.destacados[2];
+
+    // 1
+    document.getElementById("dImg1").src = d1.img;
+    document.getElementById("dT1").textContent = d1.titulo;
+    document.getElementById("dTx1").textContent = d1.texto;
+    document.getElementById("dP1").textContent = d1.precio;
+
+    // 2
+    document.getElementById("dImg2").src = d2.img;
+    document.getElementById("dT2").textContent = d2.titulo;
+    document.getElementById("dTx2").textContent = d2.texto;
+    document.getElementById("dP2").textContent = d2.precio;
+
+    // 3
+    if (d3) {
+      const img3 = document.getElementById("dImg3");
+      const t3 = document.getElementById("dT3");
+      const tx3 = document.getElementById("dTx3");
+      const p3 = document.getElementById("dP3");
+      if (img3) img3.src = d3.img;
+      if (t3) t3.textContent = d3.titulo;
+      if (tx3) tx3.textContent = d3.texto;
+      if (p3) p3.textContent = d3.precio;
+    }
+
+    // ===== Foto / Promo / Mapa =====
+    (function () {
+      const tabs = Array.from(document.querySelectorAll(".media-tab"));
+      const img = document.getElementById("mediaImg");
+      const map = document.getElementById("mediaMap");
+      const hint = document.getElementById("mediaHint");
+
+      if (!tabs.length || !img || !map || !hint) {
+        const old = document.getElementById("promoImg");
+        if (old && DATA.promoImg) old.src = DATA.promoImg;
+        return;
+      }
+
+      const setActive = (view) => {
+        tabs.forEach((b) => {
+          const activo = b.dataset.view === view;
+          b.classList.toggle("is-active", activo);
+          b.setAttribute("aria-selected", activo ? "true" : "false");
+        });
+
+        if (view === "mapa") {
+          img.style.display = "none";
+          map.style.display = "block";
+          map.src = DATA.mapaEmbed || "";
+          hint.textContent =
+            "Estamos en Montevideo 134, Lindavista Norte, Gustavo A. Madero, CP 07300";
+          return;
+        }
+
+        map.style.display = "none";
+        img.style.display = "block";
+
+        if (view === "foto") {
+          img.src = DATA.fotoImg || "";
+          img.alt = "Foto del local";
+          hint.textContent = "Visita nuestro local";
+        } else {
+          img.src = DATA.promoImg || "";
+          img.alt = "Promoción";
+          hint.textContent = "Tenemos promoción todos los días";
+        }
+      };
+
+      tabs.forEach((btn) => {
+        btn.addEventListener("click", () => setActive(btn.dataset.view));
+      });
+
+      setActive("foto");
+    })();
+
+    // ✅ Inicializar modal
+    __MM = initMenuModal();
+
+    // ===== MENÚ cards =====
+    const menuGrid = document.getElementById("menuGrid");
+    menuGrid.innerHTML = ""; // por si recargas o re-render
+
+    DATA.menu.forEach((m, i) => {
+      const card = document.createElement("div");
+      card.className =
+        "card reveal " + (i === 1 ? "delay-1" : i === 2 ? "delay-2" : i === 3 ? "delay-3" : "");
+
+      // 👇 IMPORTANTE: la pill ahora es un BUTTON que abre el modal
+      card.innerHTML = `
+        <div class="img"><img src="${m.img}" alt="${m.titulo}"></div>
+        <div class="body">
+          <h4>${m.titulo}</h4>
+          <p>${m.texto}</p>
+          ${m.precio ? `<div class="price">${m.precio}</div>` : ``}
+        </div>
+        <div class="foot">
+          <button type="button" class="pill mm-open" data-mm="${i}">${m.etiqueta}</button>
+          <a class="btn primary small" href="${wa}" target="_blank" rel="noopener">Pedir</a>
+        </div>
+      `;
+      menuGrid.appendChild(card);
+    });
+
+    // ✅ Abrir modal tocando la pill (Top/Saludable/etc.)
+    menuGrid.addEventListener("click", (e) => {
+      const btn = e.target.closest(".mm-open");
+      if (!btn) return;
+
+      const idx = Number(btn.getAttribute("data-mm"));
+      const item = DATA.menu[idx];
+      if (!item) return;
+
+      if (__MM && __MM.open) __MM.open(item);
+    });
+
+    // Beneficios
+    const benefGrid = document.getElementById("benefGrid");
+    benefGrid.innerHTML = "";
+    DATA.beneficios.forEach((b, i) => {
+      const div = document.createElement("div");
+      div.className = "benef reveal " + (i === 1 ? "delay-1" : i === 2 ? "delay-2" : "");
+      div.innerHTML = `<h4>${b.titulo}</h4><p>${b.texto}</p>`;
+      benefGrid.appendChild(div);
+    });
+
+    // Testimonios
+    const testiGrid = document.getElementById("testiGrid");
+    testiGrid.innerHTML = "";
+    DATA.testimonios.forEach((t, i) => {
+      const div = document.createElement("div");
+      div.className = "testi reveal " + (i === 1 ? "delay-1" : i === 2 ? "delay-2" : "");
+      div.innerHTML = `
+        <div class="stars">★★★★★</div>
+        <p style="margin-top:10px;">${t.texto}</p>
+        <div class="name">${t.nombre}</div>
+      `;
+      testiGrid.appendChild(div);
+    });
+
+    // FAQ
+    const faqGrid = document.getElementById("faqGrid");
+    faqGrid.innerHTML = "";
+    DATA.faqs.forEach((f, i) => {
+      const d = document.createElement("details");
+      d.className = "reveal " + (i === 1 ? "delay-1" : i === 2 ? "delay-2" : i === 3 ? "delay-3" : "");
+      d.innerHTML = `<summary>${f.q}</summary><p>${f.a}</p>`;
+      faqGrid.appendChild(d);
+    });
+
+    // ===== Animación suave al aparecer =====
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.classList.add("in");
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  });
+</script>
+</body>
+</html>
