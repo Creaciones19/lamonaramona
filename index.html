@@ -148,13 +148,101 @@
     gap:14px;
   }
   .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
-  .brand-logo{
-    width:44px;height:44px;border-radius:14px; overflow:hidden;
-    background: transparent;
-    box-shadow: 0 12px 30px rgba(0,0,0,.22);
-    border: 1px solid rgba(255,255,255,.18);
+/* ===== LOGO HEADER (SIN CAJA) ===== */
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:none;
+  padding:0;
+  border-radius:0;
+}
+
+/* ===== LOGO HEADER LIMPIO (SIN CUADRO) ===== */
+.brand-logo{
+  width:78px;        /* ⬅ logo más grande */
+  height:78px;
+  background:none;
+  border:none;
+  box-shadow:none;
+  overflow:visible;
+}
+
+.brand-logo img{
+  width:100%;
+  height:100%;
+  object-fit:contain; /* ⬅ no recorta el logo */
+  border-radius:0;    /* ⬅ sin bordes */
+  box-shadow:none;    /* ⬅ sin sombra */
+}
+/* =========================
+   ✅ RESPONSIVE HEADER (FIX)
+========================= */
+@media (max-width: 560px){
+
+  /* Un poco de aire lateral */
+  .wrap{ width:min(1120px, 94%); }
+
+  /* Header más compacto */
+  .nav{
+    padding:12px 0;
+    gap:10px;
   }
-  .brand-logo img{width:100%;height:100%;object-fit:cover}
+
+  /* El bloque del logo no empuja todo */
+  .brand{
+    gap:10px;
+    min-width: 0; /* clave para que pueda encogerse */
+  }
+
+  /* Logo más chico en móvil */
+  .brand-logo{
+    width:52px;
+    height:52px;
+    flex: 0 0 auto;
+  }
+
+  /* Texto del branding no se desborda */
+  .brand-name{
+    font-size:1.05rem;
+    line-height:1.05;
+  }
+
+  .brand-sub{
+    font-size:.78rem;
+    line-height:1.05;
+    opacity:.9;
+  }
+
+  /* Evita que el texto haga overflow */
+  .brand-text{ min-width:0; }
+  .brand-name, .brand-sub{
+    display:block;
+    max-width: 155px;     /* ajusta si quieres más/menos */
+    white-space: normal;  /* permite salto */
+    overflow: hidden;
+  }
+
+  /* Botón de pedir (si existe en tu header) */
+  .btn.small{
+    padding:10px 12px;
+    font-size:.9rem;
+  }
+
+  /* Burger no enorme */
+  .burger{
+    width:44px;
+    height:44px;
+    border-radius:14px;
+  }
+}
+
+/* Tablets: que no se rompa antes de 560 */
+@media (max-width: 820px){
+  .nav{ gap:12px; }
+  .brand-logo{ width:60px; height:60px; }
+}
   .brand-name{font-weight:1000;color: rgba(255,255,255,.95); line-height:1}
   .brand-sub{font-size:.85rem;color: rgba(255,255,255,.78)}
 
@@ -644,6 +732,49 @@
     .testi{grid-column: span 12;}
     .nav-links{display:none}
   }
+
+  /* ===== HAMBURGUESA ===== */
+.burger{
+  display:none;
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.18);
+  color:#fff;
+  font-size:22px;
+  font-weight:1000;
+  cursor:pointer;
+}
+
+/* ✅ MOBILE MENU */
+@media (max-width: 560px){
+  .burger{ display:inline-flex; align-items:center; justify-content:center; }
+
+  /* 👇 QUITAMOS tu display:none y lo volvemos menú desplegable */
+  .nav{
+    position: relative;
+  }
+
+  .nav-links{
+    display:none;                 /* cerrado por defecto */
+    position:absolute;
+    left:0;
+    right:0;
+    top: calc(100% + 10px);
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 18px;
+    background: var(--glass);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow: 0 18px 50px rgba(0,0,0,.28);
+  }
+
+  body.nav-open .nav-links{ display:flex; }
+  .nav-links a{ padding:10px 8px; }
+}
+
 </style>
 </head>
 
@@ -826,6 +957,9 @@ menu: [
         <div class="brand-name" id="brandName">—</div>
         <div class="brand-sub" id="brandSub">Ordena fácil por WhatsApp</div>
       </div>
+      <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
+  ☰
+</button>
     </a>
 
     <nav class="nav-links">
@@ -1389,6 +1523,15 @@ modal.addEventListener("click", (e) => {
 
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
   });
+  </script>
+  <script>
+  const burger = document.getElementById("burger");
+  if (burger){
+    burger.addEventListener("click", () => {
+      const open = document.body.classList.toggle("nav-open");
+      burger.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
 </script>
 </body>
 </html>
